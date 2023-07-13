@@ -2,7 +2,23 @@ title: tex-to-typst vector equations
 cases:
   - title: Integrals and vec
     tex: '\nabla \cdot \vec{j}(p) = \lim_{v \to \{ p \}} = \int \int_{S(v)} \frac{\vec{j} \cdot \vec{n}}{v} dS'
-    typst: nabla dot.op arrow(j) (p) = lim_(v arrow.r {p}) = integral integral_(S (v)) frac(arrow(j) dot.op arrow(n), v) d S
+    typst: nabla dot.op arrow(j)(p) = lim_(v arrow.r {p}) = integral integral_(S(v)) frac(arrow(j) dot.op arrow(n), v) d S
   - title: Fractions and vectors
     tex: '\frac{1}{4} \sum_{i=1}^4 \mathbf{P}_i^\top \sqrt{v} \mathbf{\Sigma}^{-1} \sqrt{v} \mathbf{P}_i \mathbf{j} = \mathbf{D}^\top v \phi'
     typst: frac(1, 4) sum_(i = 1)^4 bold(P)_i^top sqrt(v) bold(Sigma)^(-1) sqrt(v) bold(P)_i bold(j) = bold(D)^top v phi
+  - title: Testing factorial, no space
+    tex: 'p ( x )   =    \frac{e^{-\lambda}\lambda^{x}}{ x ! }'
+    typst: p(x) = frac(e^(-lambda) lambda^x, x!)
+  - title: Mathrm
+    tex: 'p_e = 1-\mathrm{e}^{-t \lambda}'
+    typst: p_e = 1 -upright(e)^(-t lambda)
+  - title: Cube root
+    tex: '\sqrt[3]{x}'
+    typst: root(3, x)
+  - title: Simplified brackets
+    tex: 'e_f(x)'
+    typst: e_f (x)
+  - title: Simplified brackets f(x)
+    note: This doesn't actually need the extra brackets, but it is clearer!
+    tex: 'e_{f(x)}'
+    typst: e_(f(x))

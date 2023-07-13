@@ -5,6 +5,7 @@ import {
 } from '@unified-latex/unified-latex-util-parse';
 import { unifiedLatexAttachMacroArguments } from '@unified-latex/unified-latex-util-arguments';
 import { typstMacros } from './macros.js';
+import type { LatexNode } from './types.js';
 
 export function parseLatex(value: string) {
   const file = unified()
@@ -18,14 +19,6 @@ export function parseLatex(value: string) {
 }
 
 export * from './macros.js';
-
-type Pos = { offset?: number; line?: number; column?: number };
-type Position = { start?: Pos; end?: Pos };
-type LatexNode = {
-  type: string;
-  content?: string | LatexNode[];
-  position?: Position;
-} & Record<string, any>;
 
 export function walkLatex(node: LatexNode) {
   delete node.position;
@@ -65,9 +58,18 @@ class State implements IState {
     this._value += ' ';
   }
 
+  _scriptsSimplified = false;
   write(str?: string) {
     if (!str) return;
-    if (!str.match(/^([})_^,])$/)) this.addWhitespace();
+    // This is a bit verbose, but the statements are much easier to read
+    if (this._scriptsSimplified && str === '(') {
+      this.addWhitespace();
+    } else if (str.match(/^([}()_^,!])$/)) {
+      // Ignore!
+    } else {
+      this.addWhitespace();
+    }
+    this._scriptsSimplified = false;
     this._value += str.trim();
   }
 
@@ -80,19 +82,23 @@ class State implements IState {
     this._lastFunction = this._value.length;
     this._value += '(';
   }
+
   closeFunction() {
     this._value += ')';
     if (!this._simplify) return;
+    // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
     if (simple.length === 3 || simple.match(/^\([a-zA-Z]*\)$/)) {
       this._value = this._value.slice(0, this._lastFunction) + simple.slice(1, -1);
+      this._scriptsSimplified = true;
     }
   }
 }
 
 function convert(node: LatexNode) {
   if (node.type === 'macro' && typeof node.content === 'string') {
-    const converted = typstMacros[node.content];
+    const result = typstMacros[node.content];
+    const converted = typeof result === 'function' ? result(node) : result;
     return converted ?? node.content;
   }
   return '';
@@ -105,15 +111,13 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
   } else if (node.type === 'string') {
     state.write(node.content as string);
   } else if (Array.isArray(node.content)) {
-    (node.content as LatexNode[]).forEach((n) => {
+    node.content.forEach((n) => {
       writeTypst(n, state);
     });
   } else if (node.type === 'macro' && Array.isArray(node.args)) {
     state.openFunction(convert(node));
-    (node.args as LatexNode[])
+    node.args
       .filter((n) => {
-        // Initially added this for sqrt which has multiple args
-        if (typeof n.content === 'string' && !n.content) return false;
         if (Array.isArray(n.content) && n.content.length === 0) return false;
         return true;
       })
@@ -123,7 +127,7 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
       });
     state.closeFunction();
   } else if (node.type === 'macro' && typeof node.content === 'string') {
-    const converted = typstMacros[node.content as any];
+    const converted = convert(node);
     state.write(converted ?? node.content);
   }
   return state;
