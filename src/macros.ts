@@ -5,6 +5,10 @@ function isEmptyNode(node?: LatexNode): boolean {
   return false;
 }
 
+export const typstStrings: Record<string, string> = {
+  ',': 'comma',
+};
+
 export const typstMacros: Record<string, string | ((node: LatexNode) => string)> = {
   cdot: 'dot.op',
   to: 'arrow.r',
@@ -17,4 +21,5 @@ export const typstMacros: Record<string, string | ((node: LatexNode) => string)>
   vec: 'arrow',
   mathbf: 'bold',
   mathrm: 'upright',
+  pm: 'plus.minus',
 };

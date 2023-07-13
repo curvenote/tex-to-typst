@@ -1,4 +1,4 @@
-title: tex-to-typst vector equations
+title: tex-to-typst
 cases:
   - title: Integrals and vec
     tex: '\nabla \cdot \vec{j}(p) = \lim_{v \to \{ p \}} = \int \int_{S(v)} \frac{\vec{j} \cdot \vec{n}}{v} dS'
@@ -22,3 +22,15 @@ cases:
     note: This doesn't actually need the extra brackets, but it is clearer!
     tex: 'e_{f(x)}'
     typst: e_(f(x))
+  - title: Text Functions
+    tex: '\text{diag}({\mathbf{v}}) \mathbf{D}\mathbf{M}_f(\sigma^{-1})^{-1}\mathbf{D}^\top\text{diag}({\mathbf{v}})\phi = \mathbf{q}'
+    typst: '"diag"(bold(v)) bold(D) bold(M)_f (sigma^(-1))^(-1) bold(D)^top "diag"(bold(v)) phi = bold(q)'
+  - title: Plus minus
+    tex: 'q = \pm I'
+    typst: q = plus.minus I
+  - title: Comma
+    tex: '\mathbf{j_x, j_y}'
+    typst: 'bold(j_x comma j_y)'
+  - title: Nested scripts
+    tex: 'r_{s^+}'
+    typst: 'r_(s^+)'

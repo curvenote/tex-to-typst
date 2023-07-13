@@ -4,7 +4,7 @@ import {
   unifiedLatexAstComplier,
 } from '@unified-latex/unified-latex-util-parse';
 import { unifiedLatexAttachMacroArguments } from '@unified-latex/unified-latex-util-arguments';
-import { typstMacros } from './macros.js';
+import { typstMacros, typstStrings } from './macros.js';
 import type { LatexNode } from './types.js';
 
 export function parseLatex(value: string) {
@@ -54,11 +54,12 @@ class State implements IState {
 
   addWhitespace() {
     const lastChar = this.value.slice(-1);
-    if (!this._value || lastChar.match(/^([\s_{(-])$/)) return;
+    if (!this._value || lastChar.match(/^(["\s_^{(-])$/)) return;
     this._value += ' ';
   }
 
   _scriptsSimplified = false;
+
   write(str?: string) {
     if (!str) return;
     // This is a bit verbose, but the statements are much easier to read
@@ -75,16 +76,22 @@ class State implements IState {
 
   _simplify?: boolean;
   _lastFunction?: number;
+  _closeToken?: string;
 
   openFunction(command: string) {
-    this.write(command);
+    if (command === 'text') {
+      this.addWhitespace();
+    } else {
+      this.write(command);
+    }
     this._simplify = command === '_' || command === '^';
     this._lastFunction = this._value.length;
-    this._value += '(';
+    this._value += command === 'text' ? '"' : '(';
+    this._closeToken = command === 'text' ? '"' : ')';
   }
 
   closeFunction() {
-    this._value += ')';
+    this._value += this._closeToken;
     if (!this._simplify) return;
     // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
@@ -104,12 +111,17 @@ function convert(node: LatexNode) {
   return '';
 }
 
+function convertText(text: string): string {
+  const result = typstStrings[text];
+  return result || text;
+}
+
 export function writeTypst(node: LatexNode, state: IState = new State()) {
   if (node.type === 'whitespace') {
     // We are controlling whitespace in the renderer
     return state;
   } else if (node.type === 'string') {
-    state.write(node.content as string);
+    state.write(convertText(node.content as string));
   } else if (Array.isArray(node.content)) {
     node.content.forEach((n) => {
       writeTypst(n, state);
