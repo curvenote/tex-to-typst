@@ -34,3 +34,6 @@ cases:
   - title: Nested scripts
     tex: 'r_{s^+}'
     typst: 'r_(s^+)'
+  - title: Nested functions
+    tex: '\mathbf{m}_\text{ref}'
+    typst: 'bold(m)_("ref")'

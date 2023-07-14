@@ -76,7 +76,7 @@ class State implements IState {
 
   _simplify?: boolean;
   _lastFunction?: number;
-  _closeToken?: string;
+  _closeToken: string[] = [];
 
   openFunction(command: string) {
     if (command === 'text') {
@@ -87,11 +87,11 @@ class State implements IState {
     this._simplify = command === '_' || command === '^';
     this._lastFunction = this._value.length;
     this._value += command === 'text' ? '"' : '(';
-    this._closeToken = command === 'text' ? '"' : ')';
+    this._closeToken.push(command === 'text' ? '"' : ')');
   }
 
   closeFunction() {
-    this._value += this._closeToken;
+    this._value += this._closeToken.pop() || ')';
     if (!this._simplify) return;
     // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
