@@ -1,9 +1,13 @@
+import fs from 'fs';
 import { unified } from 'unified';
 import {
   unifiedLatexFromString,
   unifiedLatexAstComplier,
 } from '@unified-latex/unified-latex-util-parse';
-import { unifiedLatexAttachMacroArguments } from '@unified-latex/unified-latex-util-arguments';
+import {
+  unifiedLatexAttachMacroArguments,
+  gobbleArguments,
+} from '@unified-latex/unified-latex-util-arguments';
 import { typstMacros, typstStrings } from './macros.js';
 import type { LatexNode } from './types.js';
 
@@ -11,7 +15,14 @@ export function parseLatex(value: string) {
   const file = unified()
     .use(unifiedLatexFromString, { mode: 'math' })
     .use(unifiedLatexAstComplier)
-    .use(unifiedLatexAttachMacroArguments, { macros: { vec: { signature: 'm' } } })
+    .use(unifiedLatexAttachMacroArguments, {
+      macros: {
+        vec: { signature: 'm' },
+        boldsymbol: { signature: 'm' },
+        left: { signature: 'm' },
+        right: { signature: 'm' },
+      },
+    })
     .processSync({ value });
   const content = (file.result as any).content;
   const tree = { type: 'math', content };
@@ -23,11 +34,43 @@ export * from './macros.js';
 export function walkLatex(node: LatexNode) {
   delete node.position;
   if (Array.isArray(node.content)) {
-    const content = (node.content as LatexNode[]).map((n) => walkLatex(n)) as any;
-    return { ...node, content };
+    const content = (node.content as LatexNode[]).map((n) => walkLatex(n)) as LatexNode[];
+    let skip = 0;
+    const parsed = content.reduce((list, next, i, array) => {
+      if (skip > 0) {
+        skip -= 1;
+        return list;
+      }
+      if (next.type === 'string' && (next.content === '_' || next.content === '^')) {
+        const { args, nodesRemoved } = gobbleArguments(array.slice(i + 1), 'm');
+        next.type = 'macro';
+        next.args = args;
+        skip += nodesRemoved;
+      }
+      if (
+        next.type === 'macro' &&
+        (next.content === 'overbrace' || next.content === 'underbrace')
+      ) {
+        const { args, nodesRemoved } = gobbleArguments(array.slice(i + 1), 'm');
+        if (
+          args[0].content.length === 1 &&
+          args[0].content[0].type === 'macro' &&
+          ((args[0].content[0].content === '^' && next.content === 'overbrace') ||
+            (args[0].content[0].content === '_' && next.content === 'underbrace'))
+        ) {
+          next.args = [...(next.args ?? []), ...args[0].content[0].args];
+          skip += nodesRemoved;
+        }
+      }
+      list.push(next);
+      return list;
+    }, [] as LatexNode[]);
+    node.content = parsed;
+    return { ...node, content: parsed };
   }
   if (Array.isArray(node.args)) {
-    const args = (node.args as LatexNode[]).map((n) => walkLatex(n)) as any;
+    const args = (node.args as LatexNode[]).map((n) => walkLatex(n)) as LatexNode[];
+    node.args = args;
     return { ...node, args };
   }
   return node;
@@ -71,7 +114,7 @@ class State implements IState {
       this.addWhitespace();
     }
     this._scriptsSimplified = false;
-    this._value += str.trim();
+    this._value += str;
   }
 
   _simplify?: boolean;
@@ -127,7 +170,12 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
       writeTypst(n, state);
     });
   } else if (node.type === 'macro' && Array.isArray(node.args)) {
-    state.openFunction(convert(node));
+    const converted = convert(node);
+    if (node.args.length === 0) {
+      state.write(converted);
+      return state;
+    }
+    state.openFunction(converted);
     node.args
       .filter((n) => {
         if (Array.isArray(n.content) && n.content.length === 0) return false;
