@@ -51,6 +51,7 @@ export const typstMacros: Record<string, string | ((node: LatexNode) => string)>
     if (left === '(') return '(';
     if (left === '[') return '[';
     if (left === '{') return '{';
+    if (left === '|') return '|';
     throw new Error(`Undefined left bracket: ${left}`);
   },
   right: (node) => {
@@ -60,6 +61,7 @@ export const typstMacros: Record<string, string | ((node: LatexNode) => string)>
     if (right === ')') return ')';
     if (right === ']') return ']';
     if (right === '}') return '}';
+    if (right === '|') return '|';
     throw new Error(`Undefined right bracket: ${right}`);
   },
   operatorname: (node) => {
