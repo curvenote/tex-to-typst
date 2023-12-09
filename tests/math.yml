@@ -95,3 +95,9 @@ cases:
     typst: |-
       overbrace([ frac(1, Delta t) frac(diff bold(theta)^(n + 1), diff bold(psi)^(n + 1)) -bold(D) "diag"(bold(G) bold(psi)^(n + 1)) frac(diff bold(k)_(A v), diff bold(psi)^(n + 1)) -bold(D) "diag"(bold(k)_(A v)(bold(psi)^(n + 1) comma bold(m))) bold(G) -bold(G)_z frac(diff bold(k)_(A v), diff bold(psi)^(n + 1)) ], bold(A) _0(bold(psi)^(n + 1))) frac(diff bold(psi)^(n + 1), diff bold(m)) \
       + underbrace([ -frac(1, Delta t) frac(diff bold(theta)^n, diff bold(psi)^n) ], bold(A)_(-1)(bold(psi) ^n)) frac(diff bold(psi)^n, diff bold(m)) = underbrace([ -bold(D) "diag"(bold(G) bold(psi)^(n + 1)) frac(diff bold(k)_(A v), diff bold(m)) -bold(G)_z frac(diff bold(k)_(A v), diff bold(m)) ], bold(B)(psi^(n + 1))) &
+  - title: leading underscore
+    tex: _2
+    typst: '""_2'
+  - title: leading power
+    tex: '^{\text{st}}'
+    typst: '""^("st")'

@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { unified } from 'unified';
 import {
   unifiedLatexFromString,
@@ -193,9 +192,13 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
   return state;
 }
 
+function postProcess(typst: string) {
+  return typst.replace(/^(_|\^)/, '""$1');
+}
+
 export function texToTypst(value: string): string {
   const tree = parseLatex(value);
   walkLatex(tree);
   const state = writeTypst(tree);
-  return state.value;
+  return postProcess(state.value);
 }
