@@ -101,3 +101,6 @@ cases:
   - title: leading power
     tex: '^{\text{st}}'
     typst: '""^("st")'
+  - title: sim symbol
+    tex: 'a \sim b'
+    typst: a tilde b
