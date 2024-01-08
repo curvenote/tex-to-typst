@@ -75,4 +75,5 @@ export const typstMacros: Record<string, string | ((node: LatexNode) => string)>
   },
   vdots: 'dots.v',
   ddots: 'dots.down',
+  sim: 'tilde',
 };
