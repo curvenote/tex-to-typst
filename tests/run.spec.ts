@@ -2,13 +2,16 @@ import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { texToTypst } from '../src';
+import { parseLatex, texToTypst } from '../src';
 
 type TestCase = {
   title: string;
   tex: string;
   typst: string;
+  skip: boolean;
 };
+
+const only = '';
 
 type TestCases = {
   title: string;
@@ -24,10 +27,21 @@ const casesList: TestCases[] = fs
   });
 
 casesList.forEach(({ title, cases }) => {
+  const skipped = cases.filter((c) => c.skip);
+  const filtered = only ? cases.filter((c) => c.title === only) : cases.filter((c) => !c.skip);
+  if (filtered.length === 0) return;
   describe(title, () => {
-    test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { tex, typst }) => {
+    test.each(filtered.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { tex, typst }) => {
+      if (only) {
+        console.log(yaml.dump(parseLatex(tex)));
+      }
       const result = texToTypst(tex);
       expect(result).toEqual(typst);
     });
+    if (skipped.length > 0 && !only) {
+      test.skip.each(skipped.map((c): [string, TestCase] => [c.title, c]))('%s', () => {
+        throw new Error('Skip');
+      });
+    }
   });
 });
