@@ -127,3 +127,11 @@ cases:
     skip: true
     tex: '\frac{1}{\tau(X_2)}'
     typst: 'frac(1, tau(X_2))'
+  - title: bar and nested bb
+    skip: true
+    tex: '\mathbb{\bar{R}}'
+    typst: 'bb(macron(R))'
+  - title: Underscore with no content
+    skip: true
+    tex: 'P_{}^{1}'
+    typst: 'P_()^{1}' # We could also remove the useless underscore
