@@ -7,8 +7,8 @@ import {
   unifiedLatexAttachMacroArguments,
   gobbleArguments,
 } from '@unified-latex/unified-latex-util-arguments';
-import { typstMacros, typstStrings } from './macros.js';
-import type { LatexNode } from './types.js';
+import { typstEnvs, typstMacros, typstStrings } from './macros.js';
+import type { IState, LatexNode, StateData } from './types.js';
 
 export function parseLatex(value: string) {
   const file = unified()
@@ -20,6 +20,10 @@ export function parseLatex(value: string) {
         boldsymbol: { signature: 'm' },
         left: { signature: 'm' },
         right: { signature: 'm' },
+        dot: { signature: 'm' },
+        ddot: { signature: 'm' },
+        hat: { signature: 'm' },
+        widehat: { signature: 'm' },
       },
     })
     .processSync({ value });
@@ -75,19 +79,13 @@ export function walkLatex(node: LatexNode) {
   return node;
 }
 
-interface IState {
-  readonly value: string;
-  write(str: string | undefined): void;
-  addWhitespace(): void;
-  openFunction(command: string): void;
-  closeFunction(): void;
-}
-
 class State implements IState {
   _value: string;
+  data: StateData;
 
   constructor() {
     this._value = '';
+    this.data = {};
   }
 
   get value() {
@@ -107,7 +105,7 @@ class State implements IState {
     // This is a bit verbose, but the statements are much easier to read
     if (this._scriptsSimplified && str === '(') {
       this.addWhitespace();
-    } else if (str.match(/^([}()_^,!])$/)) {
+    } else if (str.match(/^([}()_^,;!])$/)) {
       // Ignore!
     } else {
       this.addWhitespace();
@@ -116,9 +114,25 @@ class State implements IState {
     this._value += str;
   }
 
+  writeChildren(node: LatexNode) {
+    if (!Array.isArray(node?.content)) return;
+    node.content?.forEach((n) => {
+      writeTypst(n, this);
+    });
+  }
+
   _simplify?: boolean;
   _lastFunction?: number;
   _closeToken: string[] = [];
+  _currentFunctions: string[] = [];
+
+  get _currentFunction() {
+    return this._currentFunctions.slice(-1)[0];
+  }
+
+  get _functionCount() {
+    return this._currentFunctions.length;
+  }
 
   openFunction(command: string) {
     if (command === 'text') {
@@ -126,6 +140,8 @@ class State implements IState {
     } else {
       this.write(command);
     }
+    this._currentFunctions.push(command);
+    this.data.inFunction = true;
     this._simplify = command === '_' || command === '^';
     this._lastFunction = this._value.length;
     this._value += command === 'text' ? '"' : '(';
@@ -134,6 +150,8 @@ class State implements IState {
 
   closeFunction() {
     this._value += this._closeToken.pop() || ')';
+    this._currentFunctions.pop();
+    this.data.inFunction = this._functionCount >= 1;
     if (!this._simplify) return;
     // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
@@ -144,17 +162,18 @@ class State implements IState {
   }
 }
 
-function convert(node: LatexNode) {
+function convert(state: IState, node: LatexNode) {
   if (node.type === 'macro' && typeof node.content === 'string') {
     const result = typstMacros[node.content];
-    const converted = typeof result === 'function' ? result(node) : result;
+    const converted = typeof result === 'function' ? result(state, node) : result;
     return converted ?? node.content;
   }
   return '';
 }
 
-function convertText(text: string): string {
+function convertText(state: IState, text: string): string {
   const result = typstStrings[text];
+  if (typeof result === 'function') return result(state) || text;
   return result || text;
 }
 
@@ -163,13 +182,22 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
     // We are controlling whitespace in the renderer
     return state;
   } else if (node.type === 'string') {
-    state.write(convertText(node.content as string));
+    // Values can come in as multiple characters
+    const val = node.content as string;
+    if ((state as any)._currentFunction === 'text') {
+      state.write(convertText(state, val));
+    } else {
+      val.split('').forEach((v) => {
+        state.write(convertText(state, v));
+      });
+    }
+  } else if (node.type === 'environment' && Array.isArray(node.content)) {
+    const env = typstEnvs[node.env];
+    env?.(state, node);
   } else if (Array.isArray(node.content)) {
-    node.content.forEach((n) => {
-      writeTypst(n, state);
-    });
+    state.writeChildren(node);
   } else if (node.type === 'macro' && Array.isArray(node.args)) {
-    const converted = convert(node);
+    const converted = convert(state, node);
     if (node.args.length === 0) {
       state.write(converted);
       return state;
@@ -186,7 +214,7 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
       });
     state.closeFunction();
   } else if (node.type === 'macro' && typeof node.content === 'string') {
-    const converted = convert(node);
+    const converted = convert(state, node);
     state.write(converted ?? node.content);
   }
   return state;

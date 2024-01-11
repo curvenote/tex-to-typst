@@ -6,3 +6,17 @@ export type LatexNode = {
   args?: LatexNode[];
   position?: Position;
 } & Record<string, any>;
+
+export type StateData = {
+  inFunction?: boolean;
+  inArray?: boolean;
+};
+export interface IState {
+  readonly value: string;
+  data: StateData;
+  write(str: string | undefined): void;
+  writeChildren(node: LatexNode): void;
+  addWhitespace(): void;
+  openFunction(command: string): void;
+  closeFunction(): void;
+}
