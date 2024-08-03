@@ -124,7 +124,6 @@ cases:
     tex: 'x(t) = \left[ \begin{array}{c} q(t) & x \\ \dot{q}(t) & x \end{array}\right]'
     typst: 'x(t) = [ mat(delim: #none, q(t), x; dot(q)(t), x) ]'
   - title: brackets
-    skip: true
     tex: '\frac{1}{\tau(X_2)}'
     typst: 'frac(1, tau(X_2))'
   - title: bar and nested bb

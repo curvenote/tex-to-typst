@@ -155,7 +155,7 @@ class State implements IState {
     if (!this._simplify) return;
     // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
-    if (simple.length === 3 || simple.match(/^\([a-zA-Z]*\)$/)) {
+    if (simple.match(/^\([a-zA-Z0-9]*\)$/)) {
       this._value = this._value.slice(0, this._lastFunction) + simple.slice(1, -1);
       this._scriptsSimplified = true;
     }
