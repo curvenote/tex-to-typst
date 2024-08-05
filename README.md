@@ -23,7 +23,7 @@ const typst = texToTypst(
   '\\frac{1}{4} \\sum_{i=1}^4 \\mathbf{P}_i^\\top \\sqrt{v} \\mathbf{\\Sigma}^{-1} \\sqrt{v} \\mathbf{P}_i \\mathbf{j} = \\mathbf{D}^\\top v \\phi',
 );
 
-console.log(typst);
+console.log(typst.value);
 // frac(1, 4) sum_(i = 1)^4 bold(P)_i^top sqrt(v) bold(Sigma)^(-1) sqrt(v) bold(P)_i bold(j) = bold(D)^top v phi
 ```
 

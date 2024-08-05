@@ -9,6 +9,7 @@ type TestCase = {
   tex: string;
   typst: string;
   skip: boolean;
+  macros?: string[];
 };
 
 const only = '';
@@ -31,13 +32,17 @@ casesList.forEach(({ title, cases }) => {
   const filtered = only ? cases.filter((c) => c.title === only) : cases.filter((c) => !c.skip);
   if (filtered.length === 0) return;
   describe(title, () => {
-    test.each(filtered.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { tex, typst }) => {
-      if (only) {
-        console.log(yaml.dump(parseLatex(tex)));
-      }
-      const result = texToTypst(tex);
-      expect(result).toEqual(typst);
-    });
+    test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
+      '%s',
+      (_, { tex, typst, macros }) => {
+        if (only) {
+          console.log(yaml.dump(parseLatex(tex)));
+        }
+        const result = texToTypst(tex);
+        expect(result.value).toEqual(typst);
+        expect([...(result.macros ?? [])]).toEqual(macros ?? []);
+      },
+    );
     if (skipped.length > 0 && !only) {
       test.skip.each(skipped.map((c): [string, TestCase] => [c.title, c]))('%s', () => {
         throw new Error('Skip');

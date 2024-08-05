@@ -9,6 +9,7 @@ import {
 } from '@unified-latex/unified-latex-util-arguments';
 import { typstEnvs, typstMacros, typstStrings } from './macros.js';
 import type { IState, LatexNode, StateData } from './types.js';
+import { runTransforms } from './transforms.js';
 
 export function parseLatex(value: string) {
   const file = unified()
@@ -90,6 +91,11 @@ class State implements IState {
 
   get value() {
     return this._value;
+  }
+
+  useMacro(macro: string) {
+    if (!this.data.macros) this.data.macros = new Set();
+    this.data.macros.add(macro);
   }
 
   addWhitespace() {
@@ -224,9 +230,10 @@ function postProcess(typst: string) {
   return typst.replace(/^(_|\^)/, '""$1');
 }
 
-export function texToTypst(value: string): string {
+export function texToTypst(value: string): { value: string; macros?: Set<string> } {
   const tree = parseLatex(value);
   walkLatex(tree);
+  runTransforms(tree);
   const state = writeTypst(tree);
-  return postProcess(state.value);
+  return { value: postProcess(state.value), macros: state.data.macros };
 }

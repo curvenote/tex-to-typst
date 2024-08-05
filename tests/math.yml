@@ -126,6 +126,7 @@ cases:
   - title: brackets
     tex: '\frac{1}{\tau(X_2)}'
     typst: 'frac(1, tau(X_2))'
+    macros: []
   - title: bar and nested bb
     skip: true
     tex: '\mathbb{\bar{R}}'
@@ -134,3 +135,13 @@ cases:
     skip: true
     tex: 'P_{}^{1}'
     typst: 'P_()^{1}' # We could also remove the useless underscore
+  - title: overset
+    tex: '\overset{*}{y_i}'
+    typst: 'overset(y_i, *)'
+    macros:
+      - '#import "@preview/ouset:0.2.0": *'
+  - title: underset
+    tex: '\sqrt{\underset{*}{y_i}}'
+    typst: 'sqrt(underset(y_i, *))'
+    macros:
+      - '#import "@preview/ouset:0.2.0": *'
