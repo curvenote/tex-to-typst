@@ -28,7 +28,9 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   to: 'arrow.r',
   rightarrow: 'arrow.r',
   leftarrow: 'arrow.l',
+  leftrightarrow: 'arrow.l.r',
   gets: 'arrow.l',
+  infin: 'infinity', // This is a mathjax only thing, https://docs.mathjax.org/en/v2.7-latest/tex.html#i
   infty: 'infinity', // oo
   nonumber: '',
   int: 'integral',
@@ -63,6 +65,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     if (left === '[') return '[';
     if (left === '{') return '{';
     if (left === '|') return '|';
+    if (left === '.') return '';
     throw new Error(`Undefined left bracket: ${left}`);
   },
   right: (state, node) => {
@@ -73,6 +76,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     if (right === ']') return ']';
     if (right === '}') return '}';
     if (right === '|') return '|';
+    if (right === '.') return '';
     throw new Error(`Undefined right bracket: ${right}`);
   },
   operatorname: (state, node) => {
@@ -87,6 +91,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   },
   sim: 'tilde',
   phi: 'phi.alt',
+  varepsilon: 'epsilon',
   propto: 'prop',
   doteq: 'dot(eq)',
   ge: 'gt.eq',
@@ -94,6 +99,8 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   le: 'lt.eq',
   leq: 'lt.eq',
   neq: 'eq.not',
+  simeq: 'tilde.eq',
+  otimes: 'times.circle',
   dot: 'dot',
   ddot: 'dot.double',
   dots: 'dots.h',
