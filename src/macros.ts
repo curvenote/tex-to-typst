@@ -41,6 +41,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   mathbf: 'bold',
   boldsymbol: 'bold',
   mathrm: 'upright',
+  textrm: 'upright',
   rm: 'upright',
   mathcal: 'cal',
   mathfrak: 'frak',
@@ -122,6 +123,16 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
       .join(' ');
     node.args = [];
     return letters;
+  },
+  overset: (state, node) => {
+    state.useMacro('#import "@preview/ouset:0.2.0": *');
+    node.args = node.args?.reverse();
+    return 'overset';
+  },
+  underset: (state, node) => {
+    state.useMacro('#import "@preview/ouset:0.2.0": *');
+    node.args = node.args?.reverse();
+    return 'underset';
   },
 };
 

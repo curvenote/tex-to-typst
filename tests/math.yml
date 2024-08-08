@@ -124,14 +124,26 @@ cases:
     tex: 'x(t) = \left[ \begin{array}{c} q(t) & x \\ \dot{q}(t) & x \end{array}\right]'
     typst: 'x(t) = [ mat(delim: #none, q(t), x; dot(q)(t), x) ]'
   - title: brackets
-    skip: true
     tex: '\frac{1}{\tau(X_2)}'
     typst: 'frac(1, tau(X_2))'
   - title: bar and nested bb
     skip: true
     tex: '\mathbb{\bar{R}}'
     typst: 'bb(macron(R))'
+  - title: 'Issue #7'
+    tex: '\sqrt{\frac{1}{x^2 + y^2}}'
+    typst: 'sqrt(frac(1, x^2 + y^2))'
   - title: Underscore with no content
     skip: true
     tex: 'P_{}^{1}'
     typst: 'P_()^{1}' # We could also remove the useless underscore
+  - title: overset
+    tex: '\overset{*}{y_i}'
+    typst: 'overset(y_i, *)'
+    macros:
+      - '#import "@preview/ouset:0.2.0": *'
+  - title: underset
+    tex: '\sqrt{\underset{*}{y_i}}'
+    typst: 'sqrt(underset(y_i, *))'
+    macros:
+      - '#import "@preview/ouset:0.2.0": *'

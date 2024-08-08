@@ -10,6 +10,7 @@ export type LatexNode = {
 export type StateData = {
   inFunction?: boolean;
   inArray?: boolean;
+  macros?: Set<string>;
 };
 export interface IState {
   readonly value: string;
@@ -19,4 +20,5 @@ export interface IState {
   addWhitespace(): void;
   openFunction(command: string): void;
   closeFunction(): void;
+  useMacro(macro: string): void;
 }

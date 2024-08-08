@@ -24,6 +24,8 @@ export function parseLatex(value: string) {
         ddot: { signature: 'm' },
         hat: { signature: 'm' },
         widehat: { signature: 'm' },
+        overset: { signature: 'm m' },
+        underset: { signature: 'm m' },
       },
     })
     .processSync({ value });
@@ -92,6 +94,11 @@ class State implements IState {
     return this._value;
   }
 
+  useMacro(macro: string) {
+    if (!this.data.macros) this.data.macros = new Set();
+    this.data.macros.add(macro);
+  }
+
   addWhitespace() {
     const lastChar = this.value.slice(-1);
     if (!this._value || lastChar.match(/^(["\s_^{(-])$/)) return;
@@ -155,7 +162,7 @@ class State implements IState {
     if (!this._simplify) return;
     // We will attempt to change `x_(i)` into `x_i`
     const simple = this._value.slice(this._lastFunction);
-    if (simple.length === 3 || simple.match(/^\([a-zA-Z]*\)$/)) {
+    if (simple.match(/^\([a-zA-Z0-9]*\)$/)) {
       this._value = this._value.slice(0, this._lastFunction) + simple.slice(1, -1);
       this._scriptsSimplified = true;
     }
@@ -224,9 +231,9 @@ function postProcess(typst: string) {
   return typst.replace(/^(_|\^)/, '""$1');
 }
 
-export function texToTypst(value: string): string {
+export function texToTypst(value: string): { value: string; macros?: Set<string> } {
   const tree = parseLatex(value);
   walkLatex(tree);
   const state = writeTypst(tree);
-  return postProcess(state.value);
+  return { value: postProcess(state.value), macros: state.data.macros };
 }
