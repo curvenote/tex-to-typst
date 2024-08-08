@@ -9,7 +9,6 @@ import {
 } from '@unified-latex/unified-latex-util-arguments';
 import { typstEnvs, typstMacros, typstStrings } from './macros.js';
 import type { IState, LatexNode, StateData } from './types.js';
-import { runTransforms } from './transforms.js';
 
 export function parseLatex(value: string) {
   const file = unified()
@@ -25,6 +24,8 @@ export function parseLatex(value: string) {
         ddot: { signature: 'm' },
         hat: { signature: 'm' },
         widehat: { signature: 'm' },
+        overset: { signature: 'm m' },
+        underset: { signature: 'm m' },
       },
     })
     .processSync({ value });
@@ -233,7 +234,6 @@ function postProcess(typst: string) {
 export function texToTypst(value: string): { value: string; macros?: Set<string> } {
   const tree = parseLatex(value);
   walkLatex(tree);
-  runTransforms(tree);
   const state = writeTypst(tree);
   return { value: postProcess(state.value), macros: state.data.macros };
 }

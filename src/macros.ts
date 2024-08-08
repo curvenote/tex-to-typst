@@ -124,12 +124,14 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     node.args = [];
     return letters;
   },
-  overset: (state) => {
+  overset: (state, node) => {
     state.useMacro('#import "@preview/ouset:0.2.0": *');
+    node.args = node.args?.reverse();
     return 'overset';
   },
-  underset: (state) => {
+  underset: (state, node) => {
     state.useMacro('#import "@preview/ouset:0.2.0": *');
+    node.args = node.args?.reverse();
     return 'underset';
   },
 };
