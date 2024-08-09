@@ -1,6 +1,6 @@
 {
   "name": "tex-to-typst",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Translate tex math code to typst",
   "keywords": [
     "Typst",
