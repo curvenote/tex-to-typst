@@ -202,7 +202,11 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
     const env = typstEnvs[node.env];
     env?.(state, node);
   } else if (Array.isArray(node.content)) {
+    // If the node is a group after a sub/super script, ensure it is wrapped in parenthesis
+    const wrapChildren = state.value.match(/([_^])$/) && node.type === 'group';
+    if (wrapChildren) state.openFunction('');
     state.writeChildren(node);
+    if (wrapChildren) state.closeFunction();
   } else if (node.type === 'macro' && Array.isArray(node.args)) {
     const converted = convert(state, node);
     if (node.args.length === 0) {
@@ -228,7 +232,12 @@ export function writeTypst(node: LatexNode, state: IState = new State()) {
 }
 
 function postProcess(typst: string) {
-  return typst.replace(/^(_|\^)/, '""$1');
+  return (
+    typst
+      .replace(/^(_|\^)/, '""$1')
+      // Turn `"SR"= 1` into `"SR" = 1`
+      .replace(/"([^"]*)"=/g, '"$1" =')
+  );
 }
 
 export function texToTypst(value: string): { value: string; macros?: Set<string> } {

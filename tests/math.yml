@@ -147,3 +147,9 @@ cases:
     typst: 'sqrt(underset(y_i, *))'
     macros:
       - '#import "@preview/ouset:0.2.0": *'
+  - title: text subscript
+    tex: '\text{SR} = t_{active}'
+    typst: '"SR" = t_(a c t i v e)'
+  - title: text subscript in function
+    tex: '\text{SR} = \sum{t_{active}}'
+    typst: '"SR" = sum t_(a c t i v e)'
