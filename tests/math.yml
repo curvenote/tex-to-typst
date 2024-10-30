@@ -159,3 +159,8 @@ cases:
   - title: no break space
     tex: '27~\mathrm{km}'
     typst: '27 med upright(k m)'
+  - title: mathsrc
+    tex: '\mathcal{F} \ne \mathscr{C}'
+    typst: 'cal(F) != scr(C)'
+    macros:
+      - '#let scr(it) = text(features: ("ss01",), box($cal(it)$))'

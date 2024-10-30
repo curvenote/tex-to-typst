@@ -93,6 +93,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   sim: 'tilde',
   cong: 'tilde.equiv',
   simeq: 'tilde.eq',
+  ne: '!=',
   phi: 'phi.alt',
   varepsilon: 'epsilon',
   propto: 'prop',
@@ -134,6 +135,10 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
       .join(' ');
     node.args = [];
     return letters;
+  },
+  mathscr: (state) => {
+    state.useMacro(`#let scr(it) = text(features: ("ss01",), box($cal(it)$))`);
+    return 'scr';
   },
   overset: (state, node) => {
     state.useMacro('#import "@preview/ouset:0.2.0": *');
