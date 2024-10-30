@@ -153,3 +153,9 @@ cases:
   - title: text subscript in function
     tex: '\text{SR} = \sum{t_{active}}'
     typst: '"SR" = sum t_(a c t i v e)'
+  - title: tilde
+    tex: '\tilde{I}'
+    typst: 'tilde(I)'
+  - title: no break space
+    tex: '27~\mathrm{km}'
+    typst: '27 med upright(k m)'

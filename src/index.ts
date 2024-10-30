@@ -23,6 +23,7 @@ export function parseLatex(value: string) {
         dot: { signature: 'm' },
         ddot: { signature: 'm' },
         hat: { signature: 'm' },
+        tilde: { signature: 'm' },
         widehat: { signature: 'm' },
         overset: { signature: 'm m' },
         underset: { signature: 'm m' },
@@ -237,6 +238,8 @@ function postProcess(typst: string) {
       .replace(/^(_|\^)/, '""$1')
       // Turn `"SR"= 1` into `"SR" = 1`
       .replace(/"([^"]*)"=/g, '"$1" =')
+      // Replace numbers like "2 7" into "27"
+      .replace(/(\d+)(?:\s+)(?=\d)/g, '$1')
   );
 }
 

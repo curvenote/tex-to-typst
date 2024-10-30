@@ -10,6 +10,7 @@ export const typstStrings: Record<string, string | ((state: IState) => string)> 
   '&': (state) => (state.data.inArray ? ',' : '&'),
   '/': '\\/',
   ';': '\\;',
+  '~': 'med',
 };
 
 function splitStrings(node: LatexNode) {
@@ -90,6 +91,8 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     return '\\\n';
   },
   sim: 'tilde',
+  cong: 'tilde.equiv',
+  simeq: 'tilde.eq',
   phi: 'phi.alt',
   varepsilon: 'epsilon',
   propto: 'prop',
@@ -99,7 +102,6 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   le: 'lt.eq',
   leq: 'lt.eq',
   neq: 'eq.not',
-  simeq: 'tilde.eq',
   otimes: 'times.circle',
   dot: 'dot',
   ddot: 'dot.double',
@@ -120,6 +122,8 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   quad: 'quad',
   qquad: 'wide',
   prod: 'product',
+  biggl: '',
+  biggr: '',
   mathbb: (state, node) => {
     const text =
       (((node.args?.slice(-1)[0] as LatexNode)?.content?.[0] as LatexNode)?.content as string) ??
