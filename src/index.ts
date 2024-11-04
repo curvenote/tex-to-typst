@@ -27,6 +27,12 @@ export function parseLatex(value: string) {
         widehat: { signature: 'm' },
         overset: { signature: 'm m' },
         underset: { signature: 'm m' },
+        overbrace: { signature: 'm' },
+        overline: { signature: 'm' },
+        overparen: { signature: 'm' },
+        underbrace: { signature: 'm' },
+        underline: { signature: 'm' },
+        underparen: { signature: 'm' },
       },
     })
     .processSync({ value });
