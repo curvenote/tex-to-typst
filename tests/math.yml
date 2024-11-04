@@ -164,3 +164,21 @@ cases:
     typst: 'cal(F) != scr(C)'
     macros:
       - '#let scr(it) = text(features: ("ss01",), box($cal(it)$))'
+  - title: overline
+    tex: '\overline{A}'
+    typst: 'overline(A)'
+  - title: overbrace
+    tex: '\overbrace{A}'
+    typst: 'overbrace(A)'
+  - title: overparen
+    tex: '\overparen{A}'
+    typst: 'overparen(A)'
+  - title: underline
+    tex: '\underline{A}'
+    typst: 'underline(A)'
+  - title: underbrace
+    tex: '\underbrace{A}'
+    typst: 'underbrace(A)'
+  - title: underparen
+    tex: '\underparen{A}'
+    typst: 'underparen(A)'
