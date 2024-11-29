@@ -6,7 +6,7 @@
     "Typst",
     "LaTeX"
   ],
-  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "author": "Rowan Cockett <rowan@continuous.foundation>",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
@@ -18,13 +18,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/curvenote/tex-to-typst",
+  "homepage": "https://github.com/continuous-foundation/tex-to-typst",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/tex-to-typst.git"
+    "url": "git+https://github.com/continuous-foundation/tex-to-typst.git"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/tex-to-typst/issues"
+    "url": "https://github.com/continuous-foundation/tex-to-typst/issues"
   },
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",

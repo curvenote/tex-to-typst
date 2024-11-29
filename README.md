@@ -1,8 +1,8 @@
 # tex-to-typst
 
 [![tex-to-typst on npm](https://img.shields.io/npm/v/tex-to-typst.svg)](https://www.npmjs.com/package/tex-to-typst)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/tex-to-typst/blob/main/LICENSE)
-![CI](https://github.com/curvenote/tex-to-typst/workflows/CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/continuous-foundation/tex-to-typst/blob/main/LICENSE)
+![CI](https://github.com/continuous-foundation/tex-to-typst/workflows/CI/badge.svg)
 
 A utility for translating LaTeX math to typst.
 
@@ -39,7 +39,7 @@ This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908
 
 <p style="text-align: center; color: #aaa; padding-top: 50px">
   Made with love by
-  <a href="https://curvenote.com" target="_blank" style="color: #aaa">
-    <img src="https://cdn.curvenote.com/brand/logo-blue-icon.png" style="height: 1em" /> Curvenote
+  <a href="https://continuous.foundation" target="_blank" style="color: #aaa">
+    Continuous Science Foundation <img src="https://continuous.foundation/images/logo-small.svg" style="height: 1em" />
   </a>
 </p>
