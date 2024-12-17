@@ -33,8 +33,8 @@ export function parseLatex(value: string) {
         underbrace: { signature: 'm' },
         underline: { signature: 'm' },
         underparen: { signature: 'm' },
-        overrightarrow: { signature: 'm m' },
-        overleftarrow: { signature: 'm m' },
+        overrightarrow: { signature: 'm' },
+        overleftarrow: { signature: 'm' },
       },
     })
     .processSync({ value });

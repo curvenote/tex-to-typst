@@ -140,6 +140,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   prod: 'product',
   biggl: '',
   biggr: '',
+  ' ': '" "',
   mathbb: (state, node) => {
     const text =
       (((node.args?.slice(-1)[0] as LatexNode)?.content?.[0] as LatexNode)?.content as string) ??
@@ -178,18 +179,21 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   },
 };
 
-const matrixEnv = (state: IState, node: LatexNode) => {
+const matrixEnv = (delim?: string) => (state: IState, node: LatexNode) => {
   state.data.inArray = true;
   state.data.previousMatRows = 0;
   state.openFunction('mat');
-  // TODO: transform the surrounding brackets into arguments
-  state.write('delim: #none,');
+  state.write(`delim: #${delim ? `"${delim}"` : 'none'},`);
   state.writeChildren(node);
   state.closeFunction();
   state.data.inArray = false;
 };
 
 export const typstEnvs: Record<string, (state: IState, node: LatexNode) => void> = {
-  array: matrixEnv,
-  matrix: matrixEnv,
+  array: matrixEnv(),
+  matrix: matrixEnv(),
+  pmatrix: matrixEnv('('),
+  bmatrix: matrixEnv('['),
+  Bmatrix: matrixEnv('{'),
+  vmatrix: matrixEnv('|'),
 };

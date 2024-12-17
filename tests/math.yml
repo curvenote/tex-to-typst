@@ -142,6 +142,11 @@ cases:
     typst: 'overset(y_i, *)'
     macros:
       - '#import "@preview/ouset:0.2.0": *'
+  - title: overset with empty argument
+    tex: '\overset{\ }{x}'
+    typst: 'overset(x, " ")'
+    macros:
+      - '#import "@preview/ouset:0.2.0": *'
   - title: underset
     tex: '\sqrt{\underset{*}{y_i}}'
     typst: 'sqrt(underset(y_i, *))'
@@ -197,6 +202,9 @@ cases:
   - title: overrightarrow
     tex: \overrightarrow{x}
     typst: accent(x, arrow)
+  - title: overrightarrow - no trailing space
+    tex: '\overrightarrow{p}\ '
+    typst: 'accent(p, arrow) " "'
   - title: overleftarrow
     tex: \overleftarrow{x}
     typst: accent(x, arrow.l)
@@ -204,6 +212,9 @@ cases:
     tex: \left[\begin{matrix}a&b\\c&d\\\end{matrix}\middle|\begin{matrix}w&x\\y&z\\\end{matrix}\right]
     # Natively, typst should use mat.augment for the middle line, but this makes the translation simpler
     typst: '[ mat(delim: #none, a, b; c, d;) mat(delim: #("|", none), ;;) mat(delim: #none, w, x; y, z;) ]'
-  - title: matrix middle 4 rows
-    tex: \left[\begin{matrix}a\\b\\c\\d\\\end{matrix}\middle|\begin{matrix}w\\x\\y\\z\\\end{matrix}\right]
-    typst: '[ mat(delim: #none, a; b; c; d;) mat(delim: #("|", none), ;;;;) mat(delim: #none, w; x; y; z;) ]'
+  - title: matrix with delim
+    tex: \begin{pmatrix}a\\b\\c\\d\\\end{pmatrix}\middle|\begin{Bmatrix}w\\x\\y\\z\\\end{Bmatrix}
+    typst: 'mat(delim: #"(", a; b; c; d;) mat(delim: #("|", none), ;;;;) mat(delim: #"{", w; x; y; z;)'
+  - title: blah
+    tex: \overrightarrow{p}\  = \begin{bmatrix} p_{Ax} \\p_{Ay} \\p_{Az} \\\end{bmatrix}\sim\lbrack 100\rbrack
+    typst: 'accent(p, arrow) " " = mat(delim: #"[", p_(A x); p_(A y); p_(A z);) tilde [ 100 ]'
