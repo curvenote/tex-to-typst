@@ -95,6 +95,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   simeq: 'tilde.eq',
   ne: '!=',
   phi: 'phi.alt',
+  varphi: 'phi.alt',
   varepsilon: 'epsilon',
   propto: 'prop',
   doteq: 'dot(eq)',

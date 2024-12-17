@@ -182,3 +182,6 @@ cases:
   - title: underparen
     tex: '\underparen{A}'
     typst: 'underparen(A)'
+  - title: varphi
+    tex: \varphi_c
+    typst: phi.alt_c
