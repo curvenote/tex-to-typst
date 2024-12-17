@@ -33,6 +33,8 @@ export function parseLatex(value: string) {
         underbrace: { signature: 'm' },
         underline: { signature: 'm' },
         underparen: { signature: 'm' },
+        overrightarrow: { signature: 'm m' },
+        overleftarrow: { signature: 'm m' },
       },
     })
     .processSync({ value });
@@ -73,6 +75,9 @@ export function walkLatex(node: LatexNode) {
           next.args = [...(next.args ?? []), ...args[0].content[0].args];
           skip += nodesRemoved;
         }
+      }
+      if (next.type === 'macro' && next.content === 'middle' && array[i + 1]?.content === '|') {
+        skip += 1;
       }
       list.push(next);
       return list;

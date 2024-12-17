@@ -10,6 +10,7 @@ export type LatexNode = {
 export type StateData = {
   inFunction?: boolean;
   inArray?: boolean;
+  previousMatRows?: number;
   macros?: Set<string>;
 };
 export interface IState {

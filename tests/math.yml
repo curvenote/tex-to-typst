@@ -191,3 +191,19 @@ cases:
   - title: l and r brack as left/right
     tex: \left\lbrack 100\right\rbrack
     typst: '[ 100 ]'
+  - title: rightarrow case sensitive
+    tex: \Rightarrow
+    typst: arrow.r.double
+  - title: overrightarrow
+    tex: \overrightarrow{x}
+    typst: accent(x, arrow)
+  - title: overleftarrow
+    tex: \overleftarrow{x}
+    typst: accent(x, arrow.l)
+  - title: matrix middle 2 rows
+    tex: \left[\begin{matrix}a&b\\c&d\\\end{matrix}\middle|\begin{matrix}w&x\\y&z\\\end{matrix}\right]
+    # Natively, typst should use mat.augment for the middle line, but this makes the translation simpler
+    typst: '[ mat(delim: #none, a, b; c, d;) mat(delim: #("|", none), ;;) mat(delim: #none, w, x; y, z;) ]'
+  - title: matrix middle 4 rows
+    tex: \left[\begin{matrix}a\\b\\c\\d\\\end{matrix}\middle|\begin{matrix}w\\x\\y\\z\\\end{matrix}\right]
+    typst: '[ mat(delim: #none, a; b; c; d;) mat(delim: #("|", none), ;;;;) mat(delim: #none, w; x; y; z;) ]'

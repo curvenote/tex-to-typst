@@ -28,9 +28,15 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   cdot: 'dot.op',
   to: 'arrow.r',
   rightarrow: 'arrow.r',
+  Rightarrow: 'arrow.r.double',
   leftarrow: 'arrow.l',
+  Leftarrow: 'arrow.l.double',
   leftrightarrow: 'arrow.l.r',
   gets: 'arrow.l',
+  rightharpoonup: 'harpoon.rt',
+  rightharpoondown: 'harpoon.rb',
+  leftharpoonup: 'harpoon.lt',
+  leftharpoondown: 'harpoon.lb',
   infin: 'infinity', // This is a mathjax only thing, https://docs.mathjax.org/en/v2.7-latest/tex.html#i
   infty: 'infinity', // oo
   nonumber: '',
@@ -91,7 +97,10 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   },
   '\\': (state, node) => {
     node.args = [];
-    if (state.data.inArray) return ';';
+    if (state.data.inArray) {
+      state.data.previousMatRows = (state.data.previousMatRows ?? 0) + 1;
+      return ';';
+    }
     return '\\\n';
   },
   sim: 'tilde',
@@ -115,6 +124,7 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
   ldots: 'dots.h',
   vdots: 'dots.v',
   ddots: 'dots.down',
+  circ: 'circle.small',
   subseteq: 'subset.eq',
   cdots: 'dots.h.c',
   cap: 'sect',
@@ -155,16 +165,31 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     node.args = node.args?.reverse();
     return 'underset';
   },
+  overrightarrow: (state, node) => {
+    node.args?.push({ type: 'argument', content: [{ type: 'macro', content: 'arrow' }] });
+    return 'accent';
+  },
+  overleftarrow: (state, node) => {
+    node.args?.push({ type: 'argument', content: [{ type: 'macro', content: 'arrow.l' }] });
+    return 'accent';
+  },
+  middle: (state) => {
+    return `mat(delim: #("|", none), ${';'.repeat(state.data.previousMatRows ?? 1)})`;
+  },
+};
+
+const matrixEnv = (state: IState, node: LatexNode) => {
+  state.data.inArray = true;
+  state.data.previousMatRows = 0;
+  state.openFunction('mat');
+  // TODO: transform the surrounding brackets into arguments
+  state.write('delim: #none,');
+  state.writeChildren(node);
+  state.closeFunction();
+  state.data.inArray = false;
 };
 
 export const typstEnvs: Record<string, (state: IState, node: LatexNode) => void> = {
-  array: (state, node) => {
-    state.data.inArray = true;
-    state.openFunction('mat');
-    // TODO: transform the surrounding brackets into arguments
-    state.write('delim: #none,');
-    state.writeChildren(node);
-    state.closeFunction();
-    state.data.inArray = false;
-  },
+  array: matrixEnv,
+  matrix: matrixEnv,
 };
