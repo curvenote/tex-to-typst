@@ -185,3 +185,9 @@ cases:
   - title: varphi
     tex: \varphi_c
     typst: phi.alt_c
+  - title: l and r brack alone
+    tex: \lbrack 100\rbrack
+    typst: '[ 100 ]'
+  - title: l and r brack as left/right
+    tex: \left\lbrack 100\right\rbrack
+    typst: '[ 100 ]'

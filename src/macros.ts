@@ -67,8 +67,10 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     if (left === '{') return '{';
     if (left === '|') return '|';
     if (left === '.') return '';
+    if (left === 'lbrack') return '[';
     throw new Error(`Undefined left bracket: ${left}`);
   },
+  lbrack: '[',
   right: (state, node) => {
     const args = node.args;
     node.args = [];
@@ -78,8 +80,10 @@ export const typstMacros: Record<string, string | ((state: IState, node: LatexNo
     if (right === '}') return '}';
     if (right === '|') return '|';
     if (right === '.') return '';
+    if (right === 'rbrack') return ']';
     throw new Error(`Undefined right bracket: ${right}`);
   },
+  rbrack: ']',
   operatorname: (state, node) => {
     const text = node.args?.slice(-1)[0] as LatexNode;
     node.args = [{ type: 'macro', content: 'text', args: [text] }];
